@@ -1,0 +1,60 @@
+policy: |
+  // Admin role có thể truy cập mọi endpoint
+  permit (
+      principal == Role::"admin",
+      action == Action::"call",
+      resource
+  );
+
+  // User role chỉ có thể truy cập /order/*
+  permit (
+      principal == Role::"user",
+      action == Action::"call",
+      resource in ApiEndpoint::"/order/*"
+  );
+
+entities: |
+  [
+      {
+          "uid": { "type": "Role", "id": "admin" },
+          "attrs": {},
+          "parents": []
+      },
+      {
+          "uid": { "type": "Role", "id": "user" },
+          "attrs": {},
+          "parents": []
+      },
+      {
+          "uid": { "type": "ApiEndpoint", "id": "/order/create" },
+          "attrs": { 
+              "path": "/order/create",
+              "method": "POST"
+          },
+          "parents": [{ "type": "ApiEndpoint", "id": "/order/*" }]
+      },
+      {
+          "uid": { "type": "ApiEndpoint", "id": "/order/list" },
+          "attrs": { 
+              "path": "/order/list",
+              "method": "GET"
+          },
+          "parents": [{ "type": "ApiEndpoint", "id": "/order/*" }]
+      },
+      {
+          "uid": { "type": "ApiEndpoint", "id": "/order/*" },
+          "attrs": {
+              "path": "/order/*",
+              "method": "*"
+          },
+          "parents": []
+      },
+      {
+          "uid": { "type": "ApiEndpoint", "id": "/users" },
+          "attrs": {
+              "path": "/users",
+              "method": "GET"
+          },
+          "parents": []
+      }
+  ]
